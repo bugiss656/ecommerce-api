@@ -1,5 +1,11 @@
 from django.db import models
+from django.utils import timezone
 from django.contrib.auth.models import User
+
+
+class AutoDateTimeField(models.DateTimeField):
+    def pre_save(self, model_instance, add):
+        return timezone.now()
 
 
 class Address(models.Model):
@@ -55,6 +61,6 @@ class Profile(models.Model):
         max_length=200
     )
 
-    created = models.DateField(
-        auto_now_add=True
+    created = AutoDateTimeField(
+        default=timezone.now()
     )
