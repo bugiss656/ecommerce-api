@@ -2,20 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
-class Profile(models.Model):
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE
-    )
-
-    phone = models.CharField(
-        verbose_name='Telefon',
-        blank=True,
-        null=True,
-        default='',
-        max_length=200
-    )
-
+class Address(models.Model):
     street = models.CharField(
         verbose_name='Ulica zamieszkania',
         blank=True,
@@ -42,6 +29,26 @@ class Profile(models.Model):
 
     zip_code = models.CharField(
         verbose_name='Kod pocztowy',
+        blank=True,
+        null=True,
+        default='',
+        max_length=200
+    )
+    
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    address = models.OneToOneField(
+        Address,
+        on_delete=models.CASCADE
+    )
+
+    phone = models.CharField(
+        verbose_name='Telefon',
         blank=True,
         null=True,
         default='',
