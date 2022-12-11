@@ -6,9 +6,33 @@ from django.contrib.auth.models import User
 class AutoDateTimeField(models.DateTimeField):
     def pre_save(self, model_instance, add):
         return timezone.now()
+    
+
+class Profile(models.Model):
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    phone = models.CharField(
+        verbose_name='Telefon',
+        blank=True,
+        null=True,
+        default='',
+        max_length=200
+    )
+
+    created = AutoDateTimeField(
+        default=timezone.now()
+    )
 
 
 class Address(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+
     street = models.CharField(
         verbose_name='Ulica zamieszkania',
         blank=True,
@@ -39,28 +63,4 @@ class Address(models.Model):
         null=True,
         default='',
         max_length=200
-    )
-    
-
-class Profile(models.Model):
-    user = models.OneToOneField(
-        User,
-        on_delete=models.CASCADE
-    )
-
-    address = models.OneToOneField(
-        Address,
-        on_delete=models.CASCADE
-    )
-
-    phone = models.CharField(
-        verbose_name='Telefon',
-        blank=True,
-        null=True,
-        default='',
-        max_length=200
-    )
-
-    created = AutoDateTimeField(
-        default=timezone.now()
     )
