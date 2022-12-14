@@ -1,14 +1,16 @@
+import uuid
 from django.db import models
-from django.utils import timezone
 from django.contrib.auth.models import User
-
-
-class AutoDateTimeField(models.DateTimeField):
-    def pre_save(self, model_instance, add):
-        return timezone.now()
     
 
-class Profile(models.Model):
+
+class CustomerProfile(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
+
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE
@@ -22,12 +24,21 @@ class Profile(models.Model):
         max_length=200
     )
 
-    created = AutoDateTimeField(
-        default=timezone.now()
+    modified_at = models.DateTimeField(
+        auto_now=True
     )
+
+    def __str__(self):
+        return f'{self.user.get_username()} - {self.user.email}'
 
 
 class Address(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
+    
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE
@@ -41,7 +52,7 @@ class Address(models.Model):
         max_length=200
     )
 
-    street_number = models.CharField(
+    building_number = models.CharField(
         verbose_name='Numer domu/lokalu',
         blank=True,
         null=True,
@@ -64,3 +75,6 @@ class Address(models.Model):
         default='',
         max_length=200
     )
+
+    def __str__(self):
+        return f'{self.street} {self.building_number} - {self.user.email}'
