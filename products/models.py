@@ -71,7 +71,7 @@ class Product(models.Model):
 
     price = models.DecimalField(
         verbose_name='Cena',
-        max_digits=15,
+        max_digits=5,
         decimal_places=2,
         default=Decimal(00.00)
     )

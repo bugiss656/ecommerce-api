@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'corsheaders',
 
     'customers.apps.CustomersConfig',
+    'orders.apps.OrdersConfig',
+    'products.apps.ProductsConfig',
 ]
 
 REST_FRAMEWORK = {
