@@ -2,7 +2,8 @@ from rest_framework import serializers
 from .models import (
     Category,
     Supplier,
-    Product
+    Product,
+    Image
 )
 
 
@@ -24,11 +25,20 @@ class SupplierSerializer(serializers.ModelSerializer):
         ]
 
 
+class ImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Image
+        fields = [
+            'alt',
+            'image_number',
+            'image',
+            'product'
+        ]
+
+
 class ProductSerializer(serializers.ModelSerializer):
-    category = CategorySerializer(
-        read_only=True
-    )
-    supplier = SupplierSerializer(
+    images = ImageSerializer(
+        many=True,
         read_only=True
     )
     
@@ -41,6 +51,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'is_active',
             'stock_quantity',
             'price',
-            'image',
-            'description'
+            'main_image',
+            'description',
+            'images'
         ]

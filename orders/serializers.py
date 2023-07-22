@@ -4,34 +4,10 @@ from .models import (
     OrderItem,
     ShippingAddress
 )
-from customers.serializers import UserSerializer
-from products.serializers import ProductSerializer
 
-
-
-class OrderSerializer(serializers.ModelSerializer):
-    user = UserSerializer(
-        read_only=True
-    )
-
-    class Meta:
-        model = Order
-        fields = [
-            'user',
-            'status',
-            'created',
-            'updated'
-        ]
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-    order = OrderSerializer(
-        read_only=True
-    )
-    product = ProductSerializer(
-        read_only=True
-    )
-
     class Meta:
         model = OrderItem
         fields = [
@@ -42,10 +18,6 @@ class OrderItemSerializer(serializers.ModelSerializer):
 
 
 class ShippingAddressSerializer(serializers.ModelSerializer):
-    order = OrderSerializer(
-        read_only=True
-    )
-
     class Meta:
         model = ShippingAddress
         fields = [
@@ -54,4 +26,21 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
             'building_number',
             'city',
             'zip_code'
+        ]
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    order_items = OrderItemSerializer(
+        many=True,
+        read_only=True
+    )
+
+    class Meta:
+        model = Order
+        fields = [
+            'user',
+            'status',
+            'created',
+            'updated',
+            'order_items'
         ]

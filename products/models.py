@@ -49,13 +49,13 @@ class Product(models.Model):
         max_length=200
     )
 
-    supplier = models.ForeignKey(
-        Supplier,
+    category = models.ForeignKey(
+        Category,
         on_delete=models.CASCADE
     )
 
-    category = models.ForeignKey(
-        Category,
+    supplier = models.ForeignKey(
+        Supplier,
         on_delete=models.CASCADE
     )
 
@@ -76,7 +76,7 @@ class Product(models.Model):
         default=Decimal(00.00)
     )
 
-    image = models.ImageField(
+    main_image = models.ImageField(
         verbose_name='Zdjęcie główne',
         default=''
     )
@@ -86,3 +86,37 @@ class Product(models.Model):
         default='',
         max_length=1000
     )
+
+
+class Image(models.Model):
+    alt = models.CharField(
+        'Tekst alternatywny (nazwa zdjęcia)', 
+        max_length=60, 
+        null=True, 
+        blank=True, 
+        default=''
+    )
+
+    image_number = models.IntegerField(
+        'Numer zdjęcia',
+        null=True
+    )
+
+    image = models.ImageField(
+        null=True, 
+        blank=True, 
+        upload_to='images', 
+        default=''
+    )
+
+    product = models.ForeignKey(
+        Product,
+        related_name='images',
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        ordering = ['image_number']
+
+    def __str__(self):
+        return self.alt
