@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'customers.apps.CustomersConfig',
     'orders.apps.OrdersConfig',
     'products.apps.ProductsConfig',
+    'banners.apps.BannersConfig'
 ]
 
 REST_FRAMEWORK = {
@@ -49,6 +50,9 @@ REST_FRAMEWORK = {
     ]
 }
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+]
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -132,6 +136,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = 'static/'
+
+STATICFILES_DIRS = [
+
+]
+
+STATIC_ROOT = BASE_DIR / 'public/static'
+
+MEDIA_URL = 'media/'
+
+MEDIA_ROOT = BASE_DIR / 'public/media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
