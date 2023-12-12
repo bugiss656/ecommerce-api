@@ -33,7 +33,7 @@ class Order(models.Model):
     )
 
     created = models.DateTimeField(
-        auto_now_add=True
+        default=timezone.now
     )
 
     updated = models.DateTimeField(
