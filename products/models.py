@@ -16,10 +16,16 @@ class Category(models.Model):
         max_length=200
     )
 
-    is_active = models.BooleanField(
-        verbose_name='Aktywna?',
-        default=True
+    parent_category = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        related_name='children',
+        on_delete=models.CASCADE
     )
+
+    def __str__(self):
+        return self.name
 
 
 class Supplier(models.Model):
@@ -34,6 +40,9 @@ class Supplier(models.Model):
         default='',
         max_length=200
     )
+
+    def __str__(self):
+        return self.name
 
 
 class Product(models.Model):
