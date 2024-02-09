@@ -10,6 +10,7 @@ from .serializers import (
     AuthTokenSerializer
 )
 from rest_framework.permissions import AllowAny
+from .models import User
 
 
 class RegisterUserView(generics.CreateAPIView):
@@ -29,3 +30,9 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         return self.request.user
+    
+
+class UpdateProfileView(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
