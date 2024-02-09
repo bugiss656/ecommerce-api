@@ -12,15 +12,25 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = [
+            'id',
             'name',
-            'is_active'
+            'slug',
+            'image',
+            'parent_category',
+            'subcategories'
         ]
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['subcategories'] = CategorySerializer(instance.subcategories.all(), many=True).data
+        return representation
 
 
 class SupplierSerializer(serializers.ModelSerializer):
     class Meta:
         model = Supplier
         fields = [
+            'id',
             'name'
         ]
 
@@ -37,6 +47,8 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
 class ProductSerializer(serializers.ModelSerializer):
+    supplier = SupplierSerializer()
+
     images = ImageSerializer(
         many=True,
         read_only=True
@@ -45,7 +57,9 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = [
+            'id',
             'name',
+            'slug',
             'category',
             'supplier',
             'is_active',

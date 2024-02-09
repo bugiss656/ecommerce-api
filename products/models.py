@@ -1,6 +1,9 @@
 import uuid
 from decimal import Decimal
 from django.db import models
+from django.utils import timezone
+from django.utils.text import slugify
+from tinymce import models as tinymce_models
 
 
 class Category(models.Model):
@@ -16,16 +19,32 @@ class Category(models.Model):
         max_length=200
     )
 
+    slug = models.SlugField(
+        default='',
+        null=True,
+        blank=True
+    )
+
+    image = models.ImageField(
+        verbose_name='Zdjęcie kategorii',
+        default=''
+    )
+
     parent_category = models.ForeignKey(
         'self',
         null=True,
         blank=True,
-        related_name='children',
+        related_name='subcategories',
         on_delete=models.CASCADE
     )
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(Category, self).save(*args, **kwargs)
+
     def __str__(self):
-        return self.name
+        return self.name 
 
 
 class Supplier(models.Model):
@@ -58,6 +77,12 @@ class Product(models.Model):
         max_length=200
     )
 
+    slug = models.SlugField(
+        default='',
+        null=True,
+        blank=True
+    )
+
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE
@@ -80,7 +105,7 @@ class Product(models.Model):
 
     price = models.DecimalField(
         verbose_name='Cena',
-        max_digits=5,
+        max_digits=7,
         decimal_places=2,
         default=Decimal(00.00)
     )
@@ -90,11 +115,29 @@ class Product(models.Model):
         default=''
     )
 
-    description = models.TextField(
+    description = tinymce_models.HTMLField(
         verbose_name='Opis produktu',
-        default='',
-        max_length=1000
+        blank=True,
+        null=True,
+        max_length=10000,
+        default=''
     )
+
+    created = models.DateTimeField(
+        default=timezone.now
+    )
+
+    updated = models.DateTimeField(
+        auto_now=True
+    )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super(Product, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
 
 
 class Image(models.Model):
