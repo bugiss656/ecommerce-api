@@ -64,6 +64,46 @@ class Supplier(models.Model):
         return self.name
 
 
+class ProductAttribute(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
+
+    name = models.CharField(
+        verbose_name='Nazwa atrybutu produktu',
+        max_length=200,
+        default=''
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class ProductAttributeValue(models.Model):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
+
+    product_attribute = models.ForeignKey(
+        ProductAttribute,
+        related_name='attributes',
+        on_delete=models.CASCADE,
+    )
+
+    value = models.CharField(
+        verbose_name='Opis parametru',
+        max_length=200,
+        default=''
+    )
+
+    def __str__(self):
+        return f'{self.product_attribute.name} - {self.value}'
+
+
 class Product(models.Model):
     id = models.UUIDField(
         primary_key=True,
@@ -108,6 +148,11 @@ class Product(models.Model):
         max_digits=7,
         decimal_places=2,
         default=Decimal(00.00)
+    )
+
+    attributes = models.ManyToManyField(
+        ProductAttributeValue,
+        default=''
     )
 
     main_image = models.ImageField(

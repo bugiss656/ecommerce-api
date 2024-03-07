@@ -3,6 +3,8 @@ from .models import (
     Category,
     Supplier,
     Product,
+    ProductAttribute,
+    ProductAttributeValue,
     Image
 )
 
@@ -17,7 +19,7 @@ class CategorySerializer(serializers.ModelSerializer):
             'slug',
             'image',
             'parent_category',
-            'subcategories'
+            'subcategories',
         ]
 
     def to_representation(self, instance):
@@ -46,6 +48,25 @@ class ImageSerializer(serializers.ModelSerializer):
         ]
 
 
+class ProductAttributeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductAttribute
+        fields = [
+            'id',
+            'name'
+        ]
+
+
+class ProductAttributeValueSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductAttributeValue
+        fields = [
+            'id',
+            'product_attribute',
+            'value'
+        ]
+
+
 class ProductSerializer(serializers.ModelSerializer):
     supplier = SupplierSerializer()
 
@@ -53,6 +74,11 @@ class ProductSerializer(serializers.ModelSerializer):
         many=True,
         read_only=True
     )
+
+    # attributes = ProductAttributeValueSerializer(
+    #     many=True,
+    #     read_only=True
+    # )
     
     class Meta:
         model = Product
@@ -67,5 +93,6 @@ class ProductSerializer(serializers.ModelSerializer):
             'price',
             'main_image',
             'description',
-            'images'
+            'images',
+            'attributes'
         ]
