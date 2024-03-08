@@ -22,21 +22,27 @@ class SubcategoriesView(generics.ListAPIView):
         return Category.objects.filter(parent_category__slug=category)
 
 
-class ProductListViewSet(viewsets.ModelViewSet):
+class ProductListView(generics.ListAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    
+
+
+class ProductsByCategoryView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+
     def _split_params(self, queryset):
         return queryset.split(',')
 
     def get_queryset(self):
+        category = self.kwargs['category']
         supplier = self.request.query_params.get('supplier')
         price_min = self.request.query_params.get('price_min')
         price_max = self.request.query_params.get('price_max')
         colour = self.request.query_params.get('colour')
 
-        queryset = self.queryset
+        queryset = Product.objects.filter(category__slug=category)
 
         if supplier:
             supplier_ids = self._split_params(supplier)
@@ -52,15 +58,6 @@ class ProductListViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(attributes__id__in=colour_ids)
         
         return queryset
-
-
-class ProductsByCategoryView(generics.ListAPIView):
-    serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-    def get_queryset(self):
-        category = self.kwargs['category']
-        return Product.objects.filter(category__slug=category)
     
 
 class ProductDetailView(generics.RetrieveAPIView):
