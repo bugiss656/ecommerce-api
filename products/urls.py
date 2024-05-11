@@ -4,7 +4,9 @@ from .views import (
     CategoriesView, 
     SubcategoriesView, 
     ProductsByCategoryView,
-    ProductDetailView
+    ProductDetailView,
+    SuppliersByCategoryView,
+    AttributesByCategoryView
 )
 
 
@@ -15,5 +17,7 @@ urlpatterns = [
     path('<str:category>', ProductsByCategoryView.as_view(), name='products_by_category'),
     path('subcategories/<str:category>', SubcategoriesView.as_view(), name='subcategories'),
     path('categories/', CategoriesView.as_view(), name='categories'),
+    path('suppliers/<str:category>', SuppliersByCategoryView.as_view(), name='suppliers_by_category'),
+    path('attributes/<str:category>', AttributesByCategoryView.as_view(), name='attributes_by_category'),
     path('all/', ProductListView.as_view(), name='products'),
 ]
