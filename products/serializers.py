@@ -49,15 +49,24 @@ class ImageSerializer(serializers.ModelSerializer):
 
 
 class ProductAttributeSerializer(serializers.ModelSerializer):
+    category = CategorySerializer(
+        many=True,
+        read_only=True
+    )
+
     class Meta:
         model = ProductAttribute
         fields = [
             'id',
-            'name'
+            'name',
+            'display_name',
+            'category'
         ]
 
 
 class ProductAttributeValueSerializer(serializers.ModelSerializer):
+    product_attribute = ProductAttributeSerializer(required=False)
+
     class Meta:
         model = ProductAttributeValue
         fields = [
@@ -75,10 +84,10 @@ class ProductSerializer(serializers.ModelSerializer):
         read_only=True
     )
 
-    # attributes = ProductAttributeValueSerializer(
-    #     many=True,
-    #     read_only=True
-    # )
+    attributes = ProductAttributeValueSerializer(
+        many=True,
+        read_only=True
+    )
     
     class Meta:
         model = Product

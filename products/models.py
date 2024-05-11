@@ -77,8 +77,19 @@ class ProductAttribute(models.Model):
         default=''
     )
 
+    display_name = models.CharField(
+        verbose_name='Nazwa atrybutu do wyświetlenia (PL)',
+        max_length=200,
+        default=''
+    )
+
+    category = models.ManyToManyField(
+        Category,
+        default=''
+    )
+
     def __str__(self):
-        return self.name
+        return self.display_name
 
 
 class ProductAttributeValue(models.Model):
@@ -101,7 +112,7 @@ class ProductAttributeValue(models.Model):
     )
 
     def __str__(self):
-        return f'{self.product_attribute.name} - {self.value}'
+        return f'{self.product_attribute.display_name} - {self.value}'
 
 
 class Product(models.Model):
