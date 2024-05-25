@@ -83,14 +83,13 @@ class ProductsByCategoryView(generics.ListAPIView):
     serializer_class = ProductSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def _split_params(self, queryset):
-        return queryset.split(',')
-
     def get_queryset(self):
         category = self.kwargs['category']
+        
         suppliers = self.request.query_params.getlist('supplier')
         price_min = self.request.query_params.get('priceMin')
         price_max = self.request.query_params.get('priceMax')
+        sorting = self.request.query_params.get('sorting')
 
         queryset = Product.objects.filter(category__slug=category)
 
@@ -102,9 +101,18 @@ class ProductsByCategoryView(generics.ListAPIView):
         if price_max:
             price_max_to_int = int(price_max)
             queryset = queryset.filter(price__lte=price_max_to_int)
+        if sorting:
+            if sorting == 'prd':
+                queryset = queryset.order_by('-price')
+            if sorting == 'pra':
+                queryset = queryset.order_by('price')
+            if sorting == 'ald':
+                queryset = queryset.order_by('-name')
+            if sorting == 'ala':
+                queryset = queryset.order_by('name')
 
         for param in self.request.query_params:
-            if param != 'supplier' and param != 'priceMin' and param != 'priceMax':
+            if param != 'supplier' and param != 'priceMin' and param != 'priceMax' and param != 'sorting':
                 queryset = queryset.filter(
                     attributes__product_attribute__name=param,
                     attributes__value__in=self.request.query_params.getlist(param)
